@@ -6,7 +6,7 @@ class Estado:
 	#Agrega transiciones al diccionario.
 	def anadir_transicion(self,simbolo,id_final):
 		if self.transiciones.get(simbolo) == None:
-			print("Hay un nuevo simbolo en el estado.")
+			print("Hay un nuevo simbolo en el estado "+str(self.id))
 			self.transiciones.setdefault(simbolo,[id_final])
 			print(self.transiciones)
 		else:

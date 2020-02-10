@@ -45,22 +45,31 @@ class AFN:
 		self.estado_inicial = self.estado_inicial-1
 		self.agregar_estado(self.estado_inicial)
 		self.anadir_transicion(self.estado_inicial,'ε',self.estado_inicial+1)
-		self.estados=self.recorrer_estados(self.estados,1)
+		numero_nodos_AFN1=len(list(self.estados))
+		self.anadir_transicion(self.estado_inicial,'ε',self.estado_inicial+numero_nodos_AFN1)
 
+		#Actualizar los numeros de los nodos.
+		self.estados=self.recorrer_estados(self.estados,1)
 		for key in list(self.estados.keys()):
 			print("AFN1 "+str(key))
 			self.estados.get(key).actualizar_transiciones(1)
 			print(self.estados.get(key).transiciones)
 
-		numero_nodos_AFN1=len(list(self.estados))
+		#Actualizar los numeros de los nodos del segundo AFN.
 		AFN2.estados=self.recorrer_estados(AFN2.estados,numero_nodos_AFN1)
 		for key in list(AFN2.estados.keys()):
 			print("AFN2 "+str(key))
 			AFN2.estados.get(key).actualizar_transiciones(numero_nodos_AFN1)
 			print(AFN2.estados.get(key).transiciones)
 
-		self.estados_aceptacion=[len(list(self.estados))+len(list(AFN2.estados))]
-		print(self.estados_aceptacion)
+		numero_nodos_total=len(list(self.estados))+len(list(AFN2.estados))
+		self.anadir_transicion(numero_nodos_AFN1-1,'ε',numero_nodos_total)
+		self.estados_aceptacion=[numero_nodos_total]
+		self.agregar_estado(numero_nodos_total)
+		AFN2.anadir_transicion(numero_nodos_total-1,'ε',numero_nodos_total)
+
+		self.estados.update(AFN2.estados)
+		self.imprimir_transiciones()
 
 	#Actualizar los id de los estados al agregar nodos antes.
 	def recorrer_estados(self,estados,no_posiciones):
@@ -71,23 +80,11 @@ class AFN:
 
 		return nuevos_estados
 
-nuevo_AFN = AFN()
-print(nuevo_AFN.estados_aceptacion,nuevo_AFN.alfabeto,nuevo_AFN.estados)
+	def imprimir_transiciones(self):
+		for key in list(self.estados.keys()):
+			print("FINAL "+str(key))
+			print(self.estados.get(key).transiciones)
 
-nuevo_AFN.agregar_simbolo('a')
-nuevo_AFN.agregar_simbolo('b')
-nuevo_AFN.agregar_simbolo('a')
-
-nuevo_AFN.agregar_estado(0)
-nuevo_AFN.agregar_estado(1)
-nuevo_AFN.agregar_estado(2)
-
-nuevo_AFN.anadir_transicion(0,'a',1)
-nuevo_AFN.anadir_transicion(0,'b',2)
-nuevo_AFN.anadir_transicion(0,'b',3)
-nuevo_AFN.anadir_transicion(0,'ε',2)
-nuevo_AFN.anadir_transicion(1,'ε',3)
-
+nuevo_AFN=AFN(simbolo='b')
 v2 = AFN(simbolo='a')
-
 nuevo_AFN.union(v2)
