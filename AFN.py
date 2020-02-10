@@ -42,7 +42,7 @@ class AFN:
 		self.estados_aceptacion.append(simbolo)
 	#Hacer una union entre dos AFNs.
 	def union(self,AFN2):
-		self.estado_inicial = self.estado_inicial-1
+		self.estado_inicial = -1
 		self.agregar_estado(self.estado_inicial)
 		self.anadir_transicion(self.estado_inicial,'ε',self.estado_inicial+1)
 		numero_nodos_AFN1=len(list(self.estados))
@@ -51,26 +51,38 @@ class AFN:
 		#Actualizar los numeros de los nodos.
 		self.estados=self.recorrer_estados(self.estados,1)
 		for key in list(self.estados.keys()):
-			print("AFN1 "+str(key))
+			#print("AFN1 "+str(key))
 			self.estados.get(key).actualizar_transiciones(1)
-			print(self.estados.get(key).transiciones)
+			#print(self.estados.get(key).transiciones)
 
 		#Actualizar los numeros de los nodos del segundo AFN.
 		AFN2.estados=self.recorrer_estados(AFN2.estados,numero_nodos_AFN1)
 		for key in list(AFN2.estados.keys()):
-			print("AFN2 "+str(key))
+			#print("AFN2 "+str(key))
 			AFN2.estados.get(key).actualizar_transiciones(numero_nodos_AFN1)
-			print(AFN2.estados.get(key).transiciones)
+			#print(AFN2.estados.get(key).transiciones)
 
 		numero_nodos_total=len(list(self.estados))+len(list(AFN2.estados))
 		self.anadir_transicion(numero_nodos_AFN1-1,'ε',numero_nodos_total)
 		self.estados_aceptacion=[numero_nodos_total]
 		self.agregar_estado(numero_nodos_total)
 		AFN2.anadir_transicion(numero_nodos_total-1,'ε',numero_nodos_total)
-
+		self.estado_inicial=0
 		self.estados.update(AFN2.estados)
 		self.imprimir_transiciones()
-
+	#Hacer una concatenacion de AFNs.
+	def concatenacion(self,AFN2):
+		numero_nodos_AFN1=len(list(self.estados))-1
+		#Actualizar los numeros de los nodos del segundo AFN.
+		AFN2.estados=self.recorrer_estados(AFN2.estados,numero_nodos_AFN1)
+		for key in list(AFN2.estados.keys()):
+			#print("AFN2 "+str(key))
+			AFN2.estados.get(key).actualizar_transiciones(numero_nodos_AFN1)
+			#print(AFN2.estados.get(key).transiciones)
+		self.estados.update(AFN2.estados)
+		self.imprimir_transiciones()
+		numero_nodos_total=len(list(self.estados))-1
+		self.estados_aceptacion=[numero_nodos_total]
 	#Actualizar los id de los estados al agregar nodos antes.
 	def recorrer_estados(self,estados,no_posiciones):
 		nuevos_estados={}
@@ -87,4 +99,6 @@ class AFN:
 
 nuevo_AFN=AFN(simbolo='b')
 v2 = AFN(simbolo='a')
-nuevo_AFN.union(v2)
+nuevo_AFN.concatenacion(v2)
+v3=  AFN(simbolo='c')
+nuevo_AFN.concatenacion(v3)
