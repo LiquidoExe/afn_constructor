@@ -27,7 +27,7 @@ class AFN:
 	#Agregar un estado al lenguaje.
 	def agregar_estado(self,id):
 		if self.estados.get(id) == None:
-			print("Ingresando un nuevo estado: "+str(id))
+			#print("Ingresando un nuevo estado: "+str(id))
 			self.estados.setdefault(id,Estado(id))
 		else:
 			print("El estado ya se encuentra en el conjunto")
@@ -43,10 +43,12 @@ class AFN:
 	#Hacer una union entre dos AFNs.
 	def union(self,AFN2):
 		self.estado_inicial = -1
-		self.agregar_estado(self.estado_inicial)
-		self.anadir_transicion(self.estado_inicial,'ε',self.estado_inicial+1)
+		self.agregar_estado(-1)
+		self.anadir_transicion(-1,'ε',0)
 		numero_nodos_AFN1=len(list(self.estados))
+		#Agregando la otra ruta de la union.
 		self.anadir_transicion(self.estado_inicial,'ε',self.estado_inicial+numero_nodos_AFN1)
+		#print("Generando una transicion del "+str(self.estado_inicial)+" e "+str(self.estado_inicial+numero_nodos_AFN1))
 
 		#Actualizar los numeros de los nodos.
 		self.estados=self.recorrer_estados(self.estados,1)
@@ -69,7 +71,7 @@ class AFN:
 		AFN2.anadir_transicion(numero_nodos_total-1,'ε',numero_nodos_total)
 		self.estado_inicial=0
 		self.estados.update(AFN2.estados)
-		self.imprimir_transiciones()
+#		self.imprimir_transiciones()
 	#Hacer una concatenacion de AFNs.
 	def concatenacion(self,AFN2):
 		numero_nodos_AFN1=len(list(self.estados))-1
@@ -80,10 +82,48 @@ class AFN:
 			AFN2.estados.get(key).actualizar_transiciones(numero_nodos_AFN1)
 			#print(AFN2.estados.get(key).transiciones)
 		self.estados.update(AFN2.estados)
-		self.imprimir_transiciones()
+#		self.imprimir_transiciones()
 		numero_nodos_total=len(list(self.estados))-1
 		self.estados_aceptacion=[numero_nodos_total]
 	#Actualizar los id de los estados al agregar nodos antes.
+	def cerradura_positiva(self):
+		self.estado_inicial = -1
+		self.agregar_estado(-1)
+		self.anadir_transicion(-1,'ε',0)
+		#Recorrer los estados.
+		self.estados=self.recorrer_estados(self.estados,1)
+		for key in list(self.estados.keys()):
+			self.estados.get(key).actualizar_transiciones(1)
+		#Agregar el ultimo nodo y las transiciones para la cerradura positiva.
+		numero_nodos_total=len(list(self.estados))
+		self.anadir_transicion(numero_nodos_total-1,'ε',numero_nodos_total)
+		self.estados_aceptacion=[numero_nodos_total]
+		self.agregar_estado(numero_nodos_total)
+		self.anadir_transicion(numero_nodos_total-1,'ε',1)
+#		self.imprimir_transiciones()
+	#La cerradura de kleene se forma de una positiva mas una transicion epsilon.
+	def cerradura_kleene(self):
+		self.cerradura_positiva()
+		self.anadir_transicion(0,'ε',len(list(self.estados))-1)
+#		self.imprimir_transiciones()
+	#No se como se llama esta operacion.
+	def interrogacion(self):
+		self.estado_inicial = -1
+		self.agregar_estado(-1)
+		self.anadir_transicion(-1,'ε',0)
+		#Recorrer los estados.
+		self.estados=self.recorrer_estados(self.estados,1)
+		for key in list(self.estados.keys()):
+			self.estados.get(key).actualizar_transiciones(1)
+		#Agregar el ultimo nodo y las transiciones para la cerradura positiva.
+		numero_nodos_total=len(list(self.estados))
+		self.anadir_transicion(numero_nodos_total-1,'ε',numero_nodos_total)
+		self.estados_aceptacion=[numero_nodos_total]
+		self.agregar_estado(numero_nodos_total)
+		self.anadir_transicion(0,'ε',numero_nodos_total)
+#		self.imprimir_transiciones()
+
+	#La funcion que reemplaza los numeros de estados viejos por los nuevos.
 	def recorrer_estados(self,estados,no_posiciones):
 		nuevos_estados={}
 
@@ -91,14 +131,23 @@ class AFN:
 			nuevos_estados.setdefault(key+no_posiciones,estados.get(key))
 
 		return nuevos_estados
-
+	#Funcion para imprimimir los conjuntos de transiciones.
 	def imprimir_transiciones(self):
-		for key in list(self.estados.keys()):
+		for key in range(len(list(self.estados.keys()))):
 			print("FINAL "+str(key))
 			print(self.estados.get(key).transiciones)
 
-nuevo_AFN=AFN(simbolo='b')
-v2 = AFN(simbolo='a')
-nuevo_AFN.concatenacion(v2)
-v3=  AFN(simbolo='c')
-nuevo_AFN.concatenacion(v3)
+a=AFN(simbolo='a')
+b=AFN(simbolo='b')
+c=AFN(simbolo='c')
+
+a.concatenacion(b)
+b=AFN(simbolo='b')
+b.union(c)
+
+b.concatenacion(a)
+b.interrogacion()
+b.cerradura_kleene()
+a=AFN(simbolo='a')
+a.concatenacion(b)
+a.imprimir_transiciones()
