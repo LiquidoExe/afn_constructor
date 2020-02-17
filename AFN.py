@@ -137,17 +137,43 @@ class AFN:
 			print("FINAL "+str(key))
 			print(self.estados.get(key).transiciones)
 
+	def union_especial(self,lista_AFN):
+		posicion=0
+		self.agregar_estado(-1)
+		self.anadir_transicion(-1,'ε',0)
+		self.estados=self.recorrer_estados(self.estados,posicion)
+		posicion+=len(list(self.estados))
+
+		print("Recorriendo "+str(posicion))
+		for key in list(self.estados.keys()):
+			self.estados.get(key).actualizar_transiciones(posicion)
+
+		for AFN in lista_AFN:
+			self.anadir_transicion(0,'ε',posicion)
+			AFN.estados=AFN.recorrer_estados(AFN.estados,posicion)
+			for key in list(AFN.estados.keys()):
+				AFN.estados.get(key).actualizar_transiciones(posicion)
+			posicion+=len(list(AFN.estados))
+
+		for AFN in lista_AFN:
+			self.estados.update(AFN.estados)
+
+
 a=AFN(simbolo='a')
 b=AFN(simbolo='b')
 c=AFN(simbolo='c')
 
-a.concatenacion(b)
-b=AFN(simbolo='b')
-b.union(c)
-
-b.concatenacion(a)
-b.interrogacion()
-b.cerradura_kleene()
-a=AFN(simbolo='a')
-a.concatenacion(b)
+lista_AFN=[b,c]
+a.union_especial(lista_AFN)
 a.imprimir_transiciones()
+
+
+#a.concatenacion(b)
+#b=AFN(simbolo='b')
+#b.union(c)
+#b.concatenacion(a)
+#b.interrogacion()
+#b.cerradura_kleene()
+#a=AFN(simbolo='a')
+#a.concatenacion(b)
+#a.imprimir_transiciones()
