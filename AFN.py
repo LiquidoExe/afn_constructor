@@ -34,7 +34,7 @@ class AFN:
 	#Agregar una transicion a un estado existente:
 	def anadir_transicion(self,id,simbolo,id_final):
 		if self.estados.get(id) == None:
-			print("El estado no existe")
+			print("El estado "+str(id)+" no existe")
 		else:
 			self.estados.get(id).anadir_transicion(simbolo,id_final)
 	#Agregar un estado dd aceptacion a la lista:
@@ -141,12 +141,14 @@ class AFN:
 		posicion=0
 		self.agregar_estado(-1)
 		self.anadir_transicion(-1,'ε',0)
-		self.estados=self.recorrer_estados(self.estados,posicion)
-		posicion+=len(list(self.estados))
+		self.estados=self.recorrer_estados(self.estados,1)
 
-		print("Recorriendo "+str(posicion))
 		for key in list(self.estados.keys()):
-			self.estados.get(key).actualizar_transiciones(posicion)
+			self.estados.get(key).actualizar_transiciones(1)
+
+		posicion+=len(list(self.estados))
+		print("Recorriendo "+str(posicion))
+
 
 		for AFN in lista_AFN:
 			self.anadir_transicion(0,'ε',posicion)
@@ -161,9 +163,12 @@ class AFN:
 
 a=AFN(simbolo='a')
 b=AFN(simbolo='b')
-c=AFN(simbolo='c')
+c=AFN(simbolo='a')
+d=AFN(simbolo='c')
 
-lista_AFN=[b,c]
+a.union(b)
+a.concatenacion(c)
+lista_AFN=[d]
 a.union_especial(lista_AFN)
 a.imprimir_transiciones()
 
