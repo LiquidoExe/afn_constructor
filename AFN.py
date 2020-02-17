@@ -136,13 +136,16 @@ class AFN:
 		for key in range(len(list(self.estados.keys()))):
 			print("FINAL "+str(key))
 			print(self.estados.get(key).transiciones)
-
+	def recorrer_finales(self,posiciones):
+		for posicion in range(len(self.estados_aceptacion)):
+			#print("Cambiando el estado final de "+str(elemento)+" a "+str(elemento+posiciones))
+			self.estados_aceptacion[posicion]+=posiciones
 	def union_especial(self,lista_AFN):
 		posicion=0
 		self.agregar_estado(-1)
 		self.anadir_transicion(-1,'ε',0)
 		self.estados=self.recorrer_estados(self.estados,1)
-
+		self.recorrer_finales(1)
 		for key in list(self.estados.keys()):
 			self.estados.get(key).actualizar_transiciones(1)
 
@@ -153,11 +156,14 @@ class AFN:
 		for AFN in lista_AFN:
 			self.anadir_transicion(0,'ε',posicion)
 			AFN.estados=AFN.recorrer_estados(AFN.estados,posicion)
+			AFN.recorrer_finales(posicion)
 			for key in list(AFN.estados.keys()):
 				AFN.estados.get(key).actualizar_transiciones(posicion)
 			posicion+=len(list(AFN.estados))
 
 		for AFN in lista_AFN:
+			for estado in AFN.estados_aceptacion:
+				self.estados_aceptacion.append(estado)
 			self.estados.update(AFN.estados)
 
 
@@ -166,11 +172,11 @@ b=AFN(simbolo='b')
 c=AFN(simbolo='a')
 d=AFN(simbolo='c')
 
-a.union(b)
-a.concatenacion(c)
-lista_AFN=[d]
+
+lista_AFN=[b,c,d]
 a.union_especial(lista_AFN)
 a.imprimir_transiciones()
+print(a.estados_aceptacion)
 
 
 #a.concatenacion(b)
