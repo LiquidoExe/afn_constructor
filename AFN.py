@@ -1,5 +1,5 @@
 from Estado import Estado
-
+#AFN2s
 class AFN:
 	#Constructor de la clase.
 	def __init__(self, simbolo = None):
