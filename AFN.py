@@ -1,5 +1,5 @@
 from Estado import Estado
-#AFN2s
+
 class AFN:
 	#Constructor de la clase.
 	def __init__(self, simbolo = None):
@@ -16,6 +16,7 @@ class AFN:
 			self.agregar_estado(0)
 			self.agregar_estado(1)
 			self.anadir_transicion(0,simbolo,1)
+
 	#Agregar un simbolo al lenguaje.
 	def agregar_simbolo(self,simbolo):
 		if simbolo in self.alfabeto:
@@ -34,7 +35,7 @@ class AFN:
 	#Agregar una transicion a un estado existente:
 	def anadir_transicion(self,id,simbolo,id_final):
 		if self.estados.get(id) == None:
-			print("El estado "+str(id)+" no existe")
+			print("El estado no existe")
 		else:
 			self.estados.get(id).anadir_transicion(simbolo,id_final)
 	#Agregar un estado dd aceptacion a la lista:
@@ -42,6 +43,10 @@ class AFN:
 		self.estados_aceptacion.append(simbolo)
 	#Hacer una union entre dos AFNs.
 	def union(self,AFN2):
+		for elemento in AFN2.alfabeto:
+			if elemento not in self.alfabeto:
+				self.alfabeto.append(elemento)
+
 		self.estado_inicial = -1
 		self.agregar_estado(-1)
 		self.anadir_transicion(-1,'ε',0)
@@ -74,6 +79,9 @@ class AFN:
 #		self.imprimir_transiciones()
 	#Hacer una concatenacion de AFNs.
 	def concatenacion(self,AFN2):
+		for elemento in AFN2.alfabeto:
+			if elemento not in self.alfabeto:
+				self.alfabeto.append(elemento)
 		numero_nodos_AFN1=len(list(self.estados))-1
 		#Actualizar los numeros de los nodos del segundo AFN.
 		AFN2.estados=self.recorrer_estados(AFN2.estados,numero_nodos_AFN1)
@@ -136,55 +144,79 @@ class AFN:
 		for key in range(len(list(self.estados.keys()))):
 			print("FINAL "+str(key))
 			print(self.estados.get(key).transiciones)
-	def recorrer_finales(self,posiciones):
-		for posicion in range(len(self.estados_aceptacion)):
-			#print("Cambiando el estado final de "+str(elemento)+" a "+str(elemento+posiciones))
-			self.estados_aceptacion[posicion]+=posiciones
-	def union_especial(self,lista_AFN):
-		posicion=0
-		self.agregar_estado(-1)
-		self.anadir_transicion(-1,'ε',0)
-		self.estados=self.recorrer_estados(self.estados,1)
-		self.recorrer_finales(1)
-		for key in list(self.estados.keys()):
-			self.estados.get(key).actualizar_transiciones(1)
+	#Funcion ir_a
+	def ir_a(self):
+		conjunto_conjuntos=[]
+		cerraduras_revisadas=[]
 
-		posicion+=len(list(self.estados))
-		print("Recorriendo "+str(posicion))
+		s=self.cerradura_e(0)
+		cerraduras_revisadas.append(0)
+
+		conjunto_conjuntos.append(s)
+		while():
+			for simbolo in self.alfabeto:
+				m=mover(s,simbolo)
+
+				for elemento in m:
+					s=self.cerradura_e(elemento)
 
 
-		for AFN in lista_AFN:
-			self.anadir_transicion(0,'ε',posicion)
-			AFN.estados=AFN.recorrer_estados(AFN.estados,posicion)
-			AFN.recorrer_finales(posicion)
-			for key in list(AFN.estados.keys()):
-				AFN.estados.get(key).actualizar_transiciones(posicion)
-			posicion+=len(list(AFN.estados))
+	#Funcion mover
+	def mover(self,conjunto_epsilon,simbolo):
+		lista_resultado=[]
 
-		for AFN in lista_AFN:
-			for estado in AFN.estados_aceptacion:
-				self.estados_aceptacion.append(estado)
-			self.estados.update(AFN.estados)
+		for var in conjunto_epsilon:
+			if(self.estados.get(var).transiciones.get(simbolo)!=None):
+				for elemento in self.estados.get(var).transiciones.get(simbolo):
+					lista_resultado.append(elemento)
 
+		print(lista_resultado)
+		return lista_resultado
+	#Funcion cerradura epsilon
+	def cerradura_e(self,var):
+		print(self.alfabeto)
+		lista_temp=[]
+		lista_temp.append(var)
+		nueva_lista=[]
+		nueva_lista2=[]
+		print(lista_temp)
+
+		"""
+		for elemento in lista_temp:
+			nueva_lista.append(elemento)
+		"""
+		while len(lista_temp) != 0:
+			var=lista_temp.pop()
+			print(var)
+			print(lista_temp)
+			if var not in nueva_lista:
+				nueva_lista.append(var)
+				print(nueva_lista)
+
+				if(self.estados.get(var).transiciones.get('ε')!=None):
+					nueva_lista2=self.estados.get(var).transiciones.get('ε')
+					for elemento in nueva_lista2:
+						lista_temp.append(elemento)
+					print(lista_temp)
+					print(nueva_lista2)
+
+				else:
+					print("Entro en el error")
+
+		return nueva_lista
 
 a=AFN(simbolo='a')
 b=AFN(simbolo='b')
-c=AFN(simbolo='a')
-d=AFN(simbolo='c')
+c=AFN(simbolo='c')
 
+a.concatenacion(b)
+b=AFN(simbolo='b')
+b.union(c)
 
-lista_AFN=[b,c,d]
-a.union_especial(lista_AFN)
-a.imprimir_transiciones()
-print(a.estados_aceptacion)
-
-
+b.concatenacion(a)
+b.interrogacion()
+b.cerradura_kleene()
+a=AFN(simbolo='a')
 #a.concatenacion(b)
-#b=AFN(simbolo='b')
-#b.union(c)
-#b.concatenacion(a)
-#b.interrogacion()
-#b.cerradura_kleene()
-#a=AFN(simbolo='a')
-#a.concatenacion(b)
-#a.imprimir_transiciones()
+b.imprimir_transiciones()
+b.mover(b.cerradura_e(0),'c')
