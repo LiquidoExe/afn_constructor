@@ -166,10 +166,13 @@ class AFN:
 
 			for var in e:
 				s=list(set(s)|set(self.cerradura_e(var)))
-			conjunto_conjuntos.append(s)
+
+			if s not in conjunto_conjuntos:
+				conjunto_conjuntos.append(s)
+				cerraduras_revisadas.append(e)
 			print("s:")
 			print(s)
-			cerraduras_revisadas.append(e)
+
 			for simbolo in self.alfabeto:
 				m=self.mover(s,simbolo)
 				if m in cerraduras_revisadas or len(m) == 0:
@@ -217,9 +220,12 @@ class AFN:
 		return nueva_lista
 
 a=AFN(simbolo='a')
-a.interrogacion()
-b=AFN(simbolo='a')
-a.concatenacion(b)
+b=AFN(simbolo='b')
+c=AFN(simbolo='c')
+a.union(b)
+a.cerradura_kleene()
+c.cerradura_positiva()
+a.concatenacion(c)
 
 a.imprimir_transiciones()
 a.ir_a()
