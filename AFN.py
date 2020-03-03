@@ -148,75 +148,78 @@ class AFN:
 	def ir_a(self):
 		conjunto_conjuntos=[]
 		cerraduras_revisadas=[]
+		conjuntos_por_revisar=[]
+		conjuntos_por_revisar.append([0])
+		conjuntos_transiciones=['ε']
 
-		s=self.cerradura_e(0)
-		cerraduras_revisadas.append(0)
+		while len(conjuntos_por_revisar)>0:
+			s=[]
+			print("Conjuntos por revisar: ",end="")
+			print(conjuntos_por_revisar)
+			print("Cerraduras revisadas:",end="")
+			print(cerraduras_revisadas)
 
-		conjunto_conjuntos.append(s)
-		while():
+			e=conjuntos_por_revisar.pop()
+			print("e:")
+			print(e)
+			print("Cerradura epsilon")
+
+			for var in e:
+				s=list(set(s)|set(self.cerradura_e(var)))
+			conjunto_conjuntos.append(s)
+			print("s:")
+			print(s)
+			cerraduras_revisadas.append(e)
 			for simbolo in self.alfabeto:
-				m=mover(s,simbolo)
+				m=self.mover(s,simbolo)
+				if m in cerraduras_revisadas or len(m) == 0:
+					print("Ya se tiene el conjunto.")
+				else:
+					conjuntos_transiciones.append(simbolo)
+					conjuntos_por_revisar.append(m)
+					print("\tm:")
+					print("\t"+str(m))
 
-				for elemento in m:
-					s=self.cerradura_e(elemento)
-
-
+		print("Cerraduras revisadas:",end="")
+		print(cerraduras_revisadas)
+		print("Conjuntos:",end="")
+		print(conjunto_conjuntos)
+		print("Transiciones:",end="")
+		print(conjuntos_transiciones)
 	#Funcion mover
 	def mover(self,conjunto_epsilon,simbolo):
 		lista_resultado=[]
-
 		for var in conjunto_epsilon:
 			if(self.estados.get(var).transiciones.get(simbolo)!=None):
 				for elemento in self.estados.get(var).transiciones.get(simbolo):
 					lista_resultado.append(elemento)
-
-		print(lista_resultado)
 		return lista_resultado
 	#Funcion cerradura epsilon
 	def cerradura_e(self,var):
-		print(self.alfabeto)
 		lista_temp=[]
 		lista_temp.append(var)
 		nueva_lista=[]
 		nueva_lista2=[]
-		print(lista_temp)
-
-		"""
-		for elemento in lista_temp:
-			nueva_lista.append(elemento)
-		"""
 		while len(lista_temp) != 0:
 			var=lista_temp.pop()
-			print(var)
-			print(lista_temp)
+
+
 			if var not in nueva_lista:
 				nueva_lista.append(var)
-				print(nueva_lista)
 
 				if(self.estados.get(var).transiciones.get('ε')!=None):
 					nueva_lista2=self.estados.get(var).transiciones.get('ε')
 					for elemento in nueva_lista2:
 						lista_temp.append(elemento)
-					print(lista_temp)
-					print(nueva_lista2)
-
 				else:
 					print("Entro en el error")
 
 		return nueva_lista
 
 a=AFN(simbolo='a')
-b=AFN(simbolo='b')
-c=AFN(simbolo='c')
-
+a.interrogacion()
+b=AFN(simbolo='a')
 a.concatenacion(b)
-b=AFN(simbolo='b')
-b.union(c)
 
-b.concatenacion(a)
-b.interrogacion()
-b.cerradura_kleene()
-a=AFN(simbolo='a')
-#a.concatenacion(b)
-b.imprimir_transiciones()
-b.mover(b.cerradura_e(0),'c')
+a.imprimir_transiciones()
+a.ir_a()
