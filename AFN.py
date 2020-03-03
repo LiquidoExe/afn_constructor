@@ -178,10 +178,12 @@ class AFN:
 				if m in cerraduras_revisadas or len(m) == 0:
 					print("Ya se tiene el conjunto.")
 				else:
-					conjuntos_transiciones.append(simbolo)
+
 					conjuntos_por_revisar.append(m)
 					print("\tm:")
 					print("\t"+str(m))
+				if [e,simbolo,m] not in conjuntos_transiciones:
+					conjuntos_transiciones.append([e,simbolo,m])
 
 		print("Cerraduras revisadas:",end="")
 		print(cerraduras_revisadas)
