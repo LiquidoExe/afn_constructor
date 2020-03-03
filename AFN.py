@@ -209,8 +209,6 @@ class AFN:
 
 		#print(lista_finales)
 		return(self.crear_AFD(cerraduras_revisadas,conjuntos_transiciones,lista_finales))
-
-
 	def crear_AFD(self,cerraduras,transiciones,finales):
 		print("CREANDO AFD")
 	########################################################
@@ -266,7 +264,6 @@ class AFN:
 
 		nuevo_AFD=AFD(cerraduras,dic_AFD,finales)
 		return nuevo_AFD
-
 	#Funcion mover
 	def mover(self,conjunto_epsilon,simbolo):
 		lista_resultado=[]
@@ -296,7 +293,43 @@ class AFN:
 					print("Entro en el error")
 
 		return nueva_lista
+	def recorrer_finales(self,posiciones):
+		for posicion in range(len(self.estados_aceptacion)):
+			#print("Cambiando el estado final de "+str(elemento)+" a "+str(elemento+posiciones))
+			self.estados_aceptacion[posicion]+=posiciones
+	def union_especial(self,lista_AFN):
 
+		for AFNx in lista_AFN:
+			for simbolo in AFNx.alfabeto:
+				if simbolo not in self.alfabeto:
+					self.alfabeto.append(simbolo)
+		posicion=0
+		self.agregar_estado(-1)
+		self.anadir_transicion(-1,'ε',0)
+		self.estados=self.recorrer_estados(self.estados,1)
+		self.recorrer_finales(1)
+		for key in list(self.estados.keys()):
+			self.estados.get(key).actualizar_transiciones(1)
+
+		posicion+=len(list(self.estados))
+		print("Recorriendo "+str(posicion))
+
+
+		for AFN in lista_AFN:
+			self.anadir_transicion(0,'ε',posicion)
+			AFN.estados=AFN.recorrer_estados(AFN.estados,posicion)
+			AFN.recorrer_finales(posicion)
+			for key in list(AFN.estados.keys()):
+				AFN.estados.get(key).actualizar_transiciones(posicion)
+			posicion+=len(list(AFN.estados))
+
+		for AFN in lista_AFN:
+			for estado in AFN.estados_aceptacion:
+				self.estados_aceptacion.append(estado)
+			self.estados.update(AFN.estados)
+
+
+'''
 a=AFN(simbolo='a')
 b=AFN(simbolo='b')
 c=AFN(simbolo='c')
@@ -304,8 +337,18 @@ a.union(b)
 a.cerradura_kleene()
 c.cerradura_positiva()
 a.concatenacion(c)
+'''
+a=AFN(simbolo='a')
+b=AFN(simbolo='b')
+a.union_especial([b])
 
 a.imprimir_transiciones()
+print("ESTADOS ACEPTACION")
+print(a.estados_aceptacion)
+print("ALFABETO")
+print(a.alfabeto)
+
+
 AFDD=a.ir_a()
 print("AFD-------------------------")
 print(AFDD.estados)
