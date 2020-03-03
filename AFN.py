@@ -1,4 +1,9 @@
 from Estado import Estado
+class AFD:
+	def __init__(self,estados,transiciones,finales):
+		self.estados=estados
+		self.transiciones=transiciones
+		self.finales=finales
 
 class AFN:
 	#Constructor de la clase.
@@ -150,7 +155,7 @@ class AFN:
 		cerraduras_revisadas=[]
 		conjuntos_por_revisar=[]
 		conjuntos_por_revisar.append([0])
-		conjuntos_transiciones=['ε']
+		conjuntos_transiciones=[]
 
 		while len(conjuntos_por_revisar)>0:
 			s=[]
@@ -185,12 +190,83 @@ class AFN:
 				if [e,simbolo,m] not in conjuntos_transiciones:
 					conjuntos_transiciones.append([e,simbolo,m])
 
-		print("Cerraduras revisadas:",end="")
-		print(cerraduras_revisadas)
-		print("Conjuntos:",end="")
-		print(conjunto_conjuntos)
-		print("Transiciones:",end="")
-		print(conjuntos_transiciones)
+		#print("Cerraduras revisadas:",end="")
+		#print(cerraduras_revisadas)
+		#print("Conjuntos:",end="")
+		#print(conjunto_conjuntos)
+		#print("Transiciones:",end="")
+		#print(conjuntos_transiciones)
+		#print("Finales")
+		#print(self.estados_aceptacion)
+
+		lista_finales=[]
+		for lista in conjunto_conjuntos:
+			lista_finales.append(0)
+			for final in self.estados_aceptacion:
+				if final in lista:
+					lista_finales.pop()
+					lista_finales.append(1)
+
+		#print(lista_finales)
+		return(self.crear_AFD(cerraduras_revisadas,conjuntos_transiciones,lista_finales))
+
+
+	def crear_AFD(self,cerraduras,transiciones,finales):
+		print("CREANDO AFD")
+	########################################################
+		#Cambiando los indices de los conjuntos:
+		lista_temp=[]
+		indice_temp=0
+
+		a=0
+		b=0
+		for x in range(len(finales)):
+			for posicion in range(len(finales)-1):
+				if cerraduras[posicion]>cerraduras[posicion+1]:
+					a=cerraduras[posicion+1]
+					cerraduras[posicion+1]=cerraduras[posicion]
+					cerraduras[posicion]=a
+
+					b=finales[posicion+1]
+					finales[posicion+1]=finales[posicion]
+					finales[posicion]=b
+
+
+
+		for lista in cerraduras:
+			lista_temp.append(indice_temp)
+			for transicion in transiciones:
+				if lista in transicion:
+					if lista == transicion[0]:
+						transicion.pop(0)
+						transicion.insert(0,indice_temp)
+					if lista == transicion[2]:
+						transicion.pop(2)
+						transicion.insert(2,indice_temp)
+			indice_temp-=1
+
+		for lista in transiciones:
+			lista[0]*=-1
+			lista[2]*=-1
+
+		dic_AFD={}
+
+		for lista in transiciones:
+			if not isinstance(lista[2],list):
+				if dic_AFD.get(lista[0]) == None:
+					dic_AFD.setdefault(lista[0],[[lista[1],lista[2]]])
+				else:
+					conjunto_ids = dic_AFD.get(lista[0])
+					conjunto_ids.append([lista[1],lista[2]])
+
+		cerraduras=[]
+		for elemento in lista_temp:
+			cerraduras.append(elemento*-1)
+
+
+		nuevo_AFD=AFD(cerraduras,dic_AFD,finales)
+		return nuevo_AFD
+
 	#Funcion mover
 	def mover(self,conjunto_epsilon,simbolo):
 		lista_resultado=[]
@@ -230,4 +306,8 @@ c.cerradura_positiva()
 a.concatenacion(c)
 
 a.imprimir_transiciones()
-a.ir_a()
+AFDD=a.ir_a()
+print("AFD-------------------------")
+print(AFDD.estados)
+print(AFDD.finales)
+print(AFDD.transiciones)
