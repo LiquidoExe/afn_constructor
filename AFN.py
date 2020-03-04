@@ -1,4 +1,9 @@
 from Estado import Estado
+class AFD:
+	def __init__(self,estados,transiciones,finales):
+		self.estados=estados
+		self.transiciones=transiciones
+		self.finales=finales
 
 class AFN:
 	#Constructor de la clase.
@@ -16,7 +21,6 @@ class AFN:
 			self.agregar_estado(0)
 			self.agregar_estado(1)
 			self.anadir_transicion(0,simbolo,1)
-
 	#Agregar un simbolo al lenguaje.
 	def agregar_simbolo(self,simbolo):
 		if simbolo in self.alfabeto:
@@ -46,7 +50,6 @@ class AFN:
 		for elemento in AFN2.alfabeto:
 			if elemento not in self.alfabeto:
 				self.alfabeto.append(elemento)
-
 		self.estado_inicial = -1
 		self.agregar_estado(-1)
 		self.anadir_transicion(-1,'ε',0)
@@ -54,21 +57,18 @@ class AFN:
 		#Agregando la otra ruta de la union.
 		self.anadir_transicion(self.estado_inicial,'ε',self.estado_inicial+numero_nodos_AFN1)
 		#print("Generando una transicion del "+str(self.estado_inicial)+" e "+str(self.estado_inicial+numero_nodos_AFN1))
-
 		#Actualizar los numeros de los nodos.
 		self.estados=self.recorrer_estados(self.estados,1)
 		for key in list(self.estados.keys()):
 			#print("AFN1 "+str(key))
 			self.estados.get(key).actualizar_transiciones(1)
 			#print(self.estados.get(key).transiciones)
-
 		#Actualizar los numeros de los nodos del segundo AFN.
 		AFN2.estados=self.recorrer_estados(AFN2.estados,numero_nodos_AFN1)
 		for key in list(AFN2.estados.keys()):
 			#print("AFN2 "+str(key))
 			AFN2.estados.get(key).actualizar_transiciones(numero_nodos_AFN1)
 			#print(AFN2.estados.get(key).transiciones)
-
 		numero_nodos_total=len(list(self.estados))+len(list(AFN2.estados))
 		self.anadir_transicion(numero_nodos_AFN1-1,'ε',numero_nodos_total)
 		self.estados_aceptacion=[numero_nodos_total]
@@ -76,7 +76,6 @@ class AFN:
 		AFN2.anadir_transicion(numero_nodos_total-1,'ε',numero_nodos_total)
 		self.estado_inicial=0
 		self.estados.update(AFN2.estados)
-#		self.imprimir_transiciones()
 	#Hacer una concatenacion de AFNs.
 	def concatenacion(self,AFN2):
 		for elemento in AFN2.alfabeto:
@@ -108,12 +107,10 @@ class AFN:
 		self.estados_aceptacion=[numero_nodos_total]
 		self.agregar_estado(numero_nodos_total)
 		self.anadir_transicion(numero_nodos_total-1,'ε',1)
-#		self.imprimir_transiciones()
 	#La cerradura de kleene se forma de una positiva mas una transicion epsilon.
 	def cerradura_kleene(self):
 		self.cerradura_positiva()
 		self.anadir_transicion(0,'ε',len(list(self.estados))-1)
-#		self.imprimir_transiciones()
 	#No se como se llama esta operacion.
 	def interrogacion(self):
 		self.estado_inicial = -1
@@ -129,15 +126,11 @@ class AFN:
 		self.estados_aceptacion=[numero_nodos_total]
 		self.agregar_estado(numero_nodos_total)
 		self.anadir_transicion(0,'ε',numero_nodos_total)
-#		self.imprimir_transiciones()
-
 	#La funcion que reemplaza los numeros de estados viejos por los nuevos.
 	def recorrer_estados(self,estados,no_posiciones):
 		nuevos_estados={}
-
 		for key in list(estados.keys()):
 			nuevos_estados.setdefault(key+no_posiciones,estados.get(key))
-
 		return nuevos_estados
 	#Funcion para imprimimir los conjuntos de transiciones.
 	def imprimir_transiciones(self):
@@ -150,45 +143,89 @@ class AFN:
 		cerraduras_revisadas=[]
 		conjuntos_por_revisar=[]
 		conjuntos_por_revisar.append([0])
-		conjuntos_transiciones=['ε']
-
+		conjuntos_transiciones=[]
 		while len(conjuntos_por_revisar)>0:
 			s=[]
 			print("Conjuntos por revisar: ",end="")
 			print(conjuntos_por_revisar)
 			print("Cerraduras revisadas:",end="")
 			print(cerraduras_revisadas)
-
 			e=conjuntos_por_revisar.pop()
 			print("e:")
 			print(e)
 			print("Cerradura epsilon")
-
 			for var in e:
 				s=list(set(s)|set(self.cerradura_e(var)))
-
 			if s not in conjunto_conjuntos:
 				conjunto_conjuntos.append(s)
 				cerraduras_revisadas.append(e)
 			print("s:")
 			print(s)
-
 			for simbolo in self.alfabeto:
 				m=self.mover(s,simbolo)
 				if m in cerraduras_revisadas or len(m) == 0:
 					print("Ya se tiene el conjunto.")
 				else:
-					conjuntos_transiciones.append(simbolo)
 					conjuntos_por_revisar.append(m)
 					print("\tm:")
 					print("\t"+str(m))
+				if [e,simbolo,m] not in conjuntos_transiciones:
+					conjuntos_transiciones.append([e,simbolo,m])
+		lista_finales=[]
+		for lista in conjunto_conjuntos:
+			lista_finales.append(0)
+			for final in self.estados_aceptacion:
+				if final in lista:
+					lista_finales.pop()
+					lista_finales.append(final)
+		#print(lista_finales)
+		return(self.crear_AFD(cerraduras_revisadas,conjuntos_transiciones,lista_finales))
+	#Crear un nuevo AFD
+	def crear_AFD(self,cerraduras,transiciones,finales):
+		print("CREANDO AFD")
+	########################################################
+		#Cambiando los indices de los conjuntos:
+		lista_temp=[]
+		indice_temp=0
+		a=0
+		b=0
+		for x in range(len(finales)):
+			for posicion in range(len(finales)-1):
+				if cerraduras[posicion]>cerraduras[posicion+1]:
+					a=cerraduras[posicion+1]
+					cerraduras[posicion+1]=cerraduras[posicion]
+					cerraduras[posicion]=a
 
-		print("Cerraduras revisadas:",end="")
-		print(cerraduras_revisadas)
-		print("Conjuntos:",end="")
-		print(conjunto_conjuntos)
-		print("Transiciones:",end="")
-		print(conjuntos_transiciones)
+					b=finales[posicion+1]
+					finales[posicion+1]=finales[posicion]
+					finales[posicion]=b
+		for lista in cerraduras:
+			lista_temp.append(indice_temp)
+			for transicion in transiciones:
+				if lista in transicion:
+					if lista == transicion[0]:
+						transicion.pop(0)
+						transicion.insert(0,indice_temp)
+					if lista == transicion[2]:
+						transicion.pop(2)
+						transicion.insert(2,indice_temp)
+			indice_temp-=1
+		for lista in transiciones:
+			lista[0]*=-1
+			lista[2]*=-1
+		dic_AFD={}
+		for lista in transiciones:
+			if not isinstance(lista[2],list):
+				if dic_AFD.get(lista[0]) == None:
+					dic_AFD.setdefault(lista[0],[[lista[1],lista[2]]])
+				else:
+					conjunto_ids = dic_AFD.get(lista[0])
+					conjunto_ids.append([lista[1],lista[2]])
+		cerraduras=[]
+		for elemento in lista_temp:
+			cerraduras.append(elemento*-1)
+		nuevo_AFD=AFD(cerraduras,dic_AFD,finales)
+		return nuevo_AFD
 	#Funcion mover
 	def mover(self,conjunto_epsilon,simbolo):
 		lista_resultado=[]
@@ -205,27 +242,57 @@ class AFN:
 		nueva_lista2=[]
 		while len(lista_temp) != 0:
 			var=lista_temp.pop()
-
-
 			if var not in nueva_lista:
 				nueva_lista.append(var)
-
 				if(self.estados.get(var).transiciones.get('ε')!=None):
 					nueva_lista2=self.estados.get(var).transiciones.get('ε')
 					for elemento in nueva_lista2:
 						lista_temp.append(elemento)
 				else:
 					print("Entro en el error")
-
 		return nueva_lista
+	#Recorrer los numeros de los estados finales.
+	def recorrer_finales(self,posiciones):
+		for posicion in range(len(self.estados_aceptacion)):
+			#print("Cambiando el estado final de "+str(elemento)+" a "+str(elemento+posiciones))
+			self.estados_aceptacion[posicion]+=posiciones
+	#Unir varios AFN a un solo inicio:
+	def union_especial(self,lista_AFN):
+		for AFNx in lista_AFN:
+			for simbolo in AFNx.alfabeto:
+				if simbolo not in self.alfabeto:
+					self.alfabeto.append(simbolo)
+		posicion=0
+		self.agregar_estado(-1)
+		self.anadir_transicion(-1,'ε',0)
+		self.estados=self.recorrer_estados(self.estados,1)
+		self.recorrer_finales(1)
+		for key in list(self.estados.keys()):
+			self.estados.get(key).actualizar_transiciones(1)
+		posicion+=len(list(self.estados))
+		print("Recorriendo "+str(posicion))
+		for AFN in lista_AFN:
+			self.anadir_transicion(0,'ε',posicion)
+			AFN.estados=AFN.recorrer_estados(AFN.estados,posicion)
+			AFN.recorrer_finales(posicion)
+			for key in list(AFN.estados.keys()):
+				AFN.estados.get(key).actualizar_transiciones(posicion)
+			posicion+=len(list(AFN.estados))
+		for AFN in lista_AFN:
+			for estado in AFN.estados_aceptacion:
+				self.estados_aceptacion.append(estado)
+			self.estados.update(AFN.estados)
 
 a=AFN(simbolo='a')
 b=AFN(simbolo='b')
-c=AFN(simbolo='c')
-a.union(b)
-a.cerradura_kleene()
-c.cerradura_positiva()
-a.concatenacion(c)
-
+a.union_especial([b])
 a.imprimir_transiciones()
-a.ir_a()
+print("ESTADOS ACEPTACION")
+print(a.estados_aceptacion)
+print("ALFABETO")
+print(a.alfabeto)
+AFDD=a.ir_a()
+print("AFD-------------------------")
+print(AFDD.estados)
+print(AFDD.finales)
+print(AFDD.transiciones)
