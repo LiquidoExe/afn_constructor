@@ -180,8 +180,7 @@ class AFN:
 					lista_finales.append(final)
 		#print(lista_finales)
 		return(self.crear_AFD(cerraduras_revisadas,conjuntos_transiciones,lista_finales))
-	#Crear un nuevo AFD
-	def crear_AFD(self,cerraduras,transiciones,finales):
+	#Crear un nuevo AFD	def crear_AFD(self,cerraduras,transiciones,finales):
 		print("CREANDO AFD")
 	########################################################
 		#Cambiando los indices de los conjuntos:
@@ -251,8 +250,7 @@ class AFN:
 				else:
 					print("Entro en el error")
 		return nueva_lista
-	#Recorrer los numeros de los estados finales.
-	def recorrer_finales(self,posiciones):
+	#Recorrer los numeros de los estados finales.	def recorrer_finales(self,posiciones):
 		for posicion in range(len(self.estados_aceptacion)):
 			#print("Cambiando el estado final de "+str(elemento)+" a "+str(elemento+posiciones))
 			self.estados_aceptacion[posicion]+=posiciones
@@ -291,6 +289,8 @@ print("ESTADOS ACEPTACION")
 print(a.estados_aceptacion)
 print("ALFABETO")
 print(a.alfabeto)
+
+
 AFDD=a.ir_a()
 print("AFD-------------------------")
 print(AFDD.estados)
