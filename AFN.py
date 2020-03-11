@@ -1,4 +1,5 @@
 from Estado import Estado
+import AlgoritmoLex
 class AFD:
 	def __init__(self,estados,transiciones,finales):
 		self.estados=estados
@@ -338,10 +339,17 @@ a.cerradura_kleene()
 c.cerradura_positiva()
 a.concatenacion(c)
 '''
+
+'''
 a=AFN(simbolo='a')
 b=AFN(simbolo='b')
 a.union_especial([b])
+'''
 
+a=AFN(simbolo='a')
+a.interrogacion()
+b=AFN(simbolo='a')
+a.concatenacion(b)
 a.imprimir_transiciones()
 print("ESTADOS ACEPTACION")
 print(a.estados_aceptacion)
