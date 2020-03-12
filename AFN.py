@@ -1,6 +1,6 @@
 #import pdb; pdb.set_trace()
 from Estado import Estado
-from AlgoritmoLex import AlgoritmoLex
+from AlgoritmoLex import Lexico
 class AFD:
 	def __init__(self,estados,transiciones,finales,alfabeto):
 		self.estados=estados
@@ -303,6 +303,9 @@ a.union_especial([c])
 
 AFDD=a.ir_a()
 print(AFDD.transiciones)
-cadena="abcd"
-print(AlgoritmoLex(cadena,AFDD))
-print(AlgoritmoLex(cadena,AFDD))
+Lexemas=Lexico("abcd",AFDD)
+print(Lexemas.getToken())
+print(Lexemas.getToken())
+Lexemas.rewind("cd")
+print(Lexemas.cadena)
+print(Lexemas.getToken())
