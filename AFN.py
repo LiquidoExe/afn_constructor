@@ -1,10 +1,13 @@
+#import pdb; pdb.set_trace()
 from Estado import Estado
-import AlgoritmoLex
+from AlgoritmoLex import AlgoritmoLex
 class AFD:
-	def __init__(self,estados,transiciones,finales):
+	def __init__(self,estados,transiciones,finales,alfabeto):
 		self.estados=estados
 		self.transiciones=transiciones
 		self.finales=finales
+		self.tokens = []
+		self.alfabeto = alfabeto
 
 class AFN:
 	#Constructor de la clase.
@@ -180,8 +183,9 @@ class AFN:
 					lista_finales.pop()
 					lista_finales.append(final)
 		#print(lista_finales)
-		return(self.crear_AFD(cerraduras_revisadas,conjuntos_transiciones,lista_finales))
-	#Crear un nuevo AFD	def crear_AFD(self,cerraduras,transiciones,finales):
+		return(self.crear_AFD(cerraduras_revisadas,conjuntos_transiciones,lista_finales,self.alfabeto))
+	#Crear un nuevo AFD
+	def crear_AFD(self,cerraduras,transiciones,finales,alfabeto):
 		print("CREANDO AFD")
 	########################################################
 		#Cambiando los indices de los conjuntos:
@@ -224,7 +228,9 @@ class AFN:
 		cerraduras=[]
 		for elemento in lista_temp:
 			cerraduras.append(elemento*-1)
-		nuevo_AFD=AFD(cerraduras,dic_AFD,finales)
+		nuevo_AFD=AFD(cerraduras,dic_AFD,finales,self.alfabeto)
+
+
 		return nuevo_AFD
 	#Funcion mover
 	def mover(self,conjunto_epsilon,simbolo):
@@ -251,7 +257,8 @@ class AFN:
 				else:
 					print("Entro en el error")
 		return nueva_lista
-	#Recorrer los numeros de los estados finales.	def recorrer_finales(self,posiciones):
+	#Recorrer los numeros de los estados finales.
+	def recorrer_finales(self,posiciones):
 		for posicion in range(len(self.estados_aceptacion)):
 			#print("Cambiando el estado final de "+str(elemento)+" a "+str(elemento+posiciones))
 			self.estados_aceptacion[posicion]+=posiciones
@@ -283,35 +290,19 @@ class AFN:
 			self.estados.update(AFN.estados)
 
 
-'''
 a=AFN(simbolo='a')
 b=AFN(simbolo='b')
 c=AFN(simbolo='c')
-a.union(b)
-a.cerradura_kleene()
-c.cerradura_positiva()
-a.concatenacion(c)
-'''
+d=AFN(simbolo='d')
 
-'''
-a=AFN(simbolo='a')
-b=AFN(simbolo='b')
-a.union_especial([b])
-'''
-
-a=AFN(simbolo='a')
-a.interrogacion()
-b=AFN(simbolo='a')
 a.concatenacion(b)
-a.imprimir_transiciones()
-print("ESTADOS ACEPTACION")
-print(a.estados_aceptacion)
-print("ALFABETO")
-print(a.alfabeto)
+c.concatenacion(d)
+
+a.union_especial([c])
 
 
 AFDD=a.ir_a()
-print("AFD-------------------------")
-print(AFDD.estados)
-print(AFDD.finales)
 print(AFDD.transiciones)
+cadena="abcd"
+print(AlgoritmoLex(cadena,AFDD))
+print(AlgoritmoLex(cadena,AFDD))
