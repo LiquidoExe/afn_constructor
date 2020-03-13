@@ -34,7 +34,8 @@ class Calculadora:
 				if self.Ep():
 					return True
 			return False
-		self.Lex.rewind(tupla[0])
+		if tupla[0] != "$":
+			self.Lex.rewind(tupla[0])
 		return True
 	#----------------------------------------------------
 	def T(self):
@@ -54,7 +55,8 @@ class Calculadora:
 				if self.Tp():
 					return True
 			return False
-		self.Lex.rewind(tupla[0])
+		if tupla[0] != "$":
+			self.Lex.rewind(tupla[0])
 		return True
 	#----------------------------------------------------
 	def P(self):
@@ -74,7 +76,8 @@ class Calculadora:
 				if self.Pp():
 					return True
 			return False
-		self.Lex.rewind(tupla[0])
+		if tupla[0] != "$":
+			self.Lex.rewind(tupla[0])
 		return True
 	#----------------------------------------------------
 	def F(self):
