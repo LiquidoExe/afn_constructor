@@ -1,6 +1,5 @@
 #import pdb; pdb.set_trace()
 from Estado import Estado
-from AlgoritmoLex import Lexico
 class AFD:
 	def __init__(self,estados,transiciones,finales,alfabeto):
 		self.estados=estados
@@ -293,32 +292,3 @@ class AFN:
 			for estado in AFN.estados_aceptacion:
 				self.estados_aceptacion.append(estado)
 			self.estados.update(AFN.estados)
-
-
-a=AFN(simbolo='a')
-b=AFN(simbolo='b')
-c=AFN(simbolo='c')
-d=AFN(simbolo='d')
-f=AFN(simbolo='f')
-g=AFN(simbolo='g')
-a.concatenacion(b)
-c.concatenacion(d)
-f.union(g)
-
-
-a.union_especial([c,f])
-
-
-AFDD=a.ir_a()
-print(AFDD.transiciones)
-print(AFDD.estados)
-
-print(AFDD.finales)
-
-
-
-Lexemas=Lexico("abcdgf",AFDD)
-print(Lexemas.getToken())
-print(Lexemas.getToken())
-print(Lexemas.getToken())
-print(Lexemas.getToken())
