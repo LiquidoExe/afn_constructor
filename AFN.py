@@ -29,9 +29,9 @@ class AFN:
 		if simbolo in self.alfabeto:
 			print("El simbolo |"+simbolo+"| ya se encuentra en el alfabeto.")
 		else:
-			print("Insertando simbolo en el alfabeto.")
+			#print("Insertando simbolo en el alfabeto.")
 			self.alfabeto.append(simbolo)
-			print(self.alfabeto)
+			#print(self.alfabeto)
 	#Agregar un estado al lenguaje.
 	def agregar_estado(self,id):
 		if self.estados.get(id) == None:
@@ -92,7 +92,7 @@ class AFN:
 			AFN2.estados.get(key).actualizar_transiciones(numero_nodos_AFN1)
 			#print(AFN2.estados.get(key).transiciones)
 		self.estados.update(AFN2.estados)
-#		self.imprimir_transiciones()
+		#self.imprimir_transiciones()
 		numero_nodos_total=len(list(self.estados))-1
 		self.estados_aceptacion=[numero_nodos_total]
 	#Actualizar los id de los estados al agregar nodos antes.
@@ -149,29 +149,29 @@ class AFN:
 		conjuntos_transiciones=[]
 		while len(conjuntos_por_revisar)>0:
 			s=[]
-			print("Conjuntos por revisar: ",end="")
-			print(conjuntos_por_revisar)
-			print("Cerraduras revisadas:",end="")
-			print(cerraduras_revisadas)
+			#print("Conjuntos por revisar: ",end="")
+			#print(conjuntos_por_revisar)
+			#print("Cerraduras revisadas:",end="")
+			#print(cerraduras_revisadas)
 			e=conjuntos_por_revisar.pop()
-			print("e:")
-			print(e)
-			print("Cerradura epsilon")
+			#print("e:")
+			#print(e)
+			#print("Cerradura epsilon")
 			for var in e:
 				s=list(set(s)|set(self.cerradura_e(var)))
 			if s not in conjunto_conjuntos:
 				conjunto_conjuntos.append(s)
 				cerraduras_revisadas.append(e)
-			print("s:")
-			print(s)
+			#print("s:")
+			#print(s)
 			for simbolo in self.alfabeto:
 				m=self.mover(s,simbolo)
 				if m in cerraduras_revisadas or len(m) == 0:
 					print("Ya se tiene el conjunto.")
 				else:
 					conjuntos_por_revisar.append(m)
-					print("\tm:")
-					print("\t"+str(m))
+					#print("\tm:")
+					#print("\t"+str(m))
 				if [e,simbolo,m] not in conjuntos_transiciones:
 					conjuntos_transiciones.append([e,simbolo,m])
 		lista_finales=[]
@@ -189,7 +189,7 @@ class AFN:
 		return(self.crear_AFD(cerraduras_revisadas,conjuntos_transiciones,lista_finales,self.alfabeto))
 	#Crear un nuevo AFD
 	def crear_AFD(self,cerraduras,transiciones,finales,alfabeto):
-		print("CREANDO AFD")
+		#print("CREANDO AFD")
 	########################################################
 		#Cambiando los indices de los conjuntos:
 		lista_temp=[]
@@ -279,7 +279,7 @@ class AFN:
 		for key in list(self.estados.keys()):
 			self.estados.get(key).actualizar_transiciones(1)
 		posicion+=len(list(self.estados))
-		print("Recorriendo "+str(posicion))
+		#print("Recorriendo "+str(posicion))
 		for AFN in lista_AFN:
 			self.anadir_transicion(0,'ε',posicion)
 			AFN.estados=AFN.recorrer_estados(AFN.estados,posicion)
