@@ -176,12 +176,16 @@ class AFN:
 				if [e,simbolo,m] not in conjuntos_transiciones:
 					conjuntos_transiciones.append([e,simbolo,m])
 		lista_finales=[]
+
+		#Asignar los tokens a los nuevos estados del AFN:
 		for lista in conjunto_conjuntos:
 			lista_finales.append(0)
+			token=10
 			for final in self.estados_aceptacion:
 				if final in lista:
 					lista_finales.pop()
-					lista_finales.append(final)
+					lista_finales.append(token)
+				token+=10
 		#print(lista_finales)
 		return(self.crear_AFD(cerraduras_revisadas,conjuntos_transiciones,lista_finales,self.alfabeto))
 	#Crear un nuevo AFD
@@ -284,6 +288,7 @@ class AFN:
 			for key in list(AFN.estados.keys()):
 				AFN.estados.get(key).actualizar_transiciones(posicion)
 			posicion+=len(list(AFN.estados))
+
 		for AFN in lista_AFN:
 			for estado in AFN.estados_aceptacion:
 				self.estados_aceptacion.append(estado)
@@ -294,18 +299,26 @@ a=AFN(simbolo='a')
 b=AFN(simbolo='b')
 c=AFN(simbolo='c')
 d=AFN(simbolo='d')
-
+f=AFN(simbolo='f')
+g=AFN(simbolo='g')
 a.concatenacion(b)
 c.concatenacion(d)
+f.union(g)
 
-a.union_especial([c])
+
+a.union_especial([c,f])
 
 
 AFDD=a.ir_a()
 print(AFDD.transiciones)
-Lexemas=Lexico("abcd",AFDD)
+print(AFDD.estados)
+
+print(AFDD.finales)
+
+
+
+Lexemas=Lexico("abcdgf",AFDD)
 print(Lexemas.getToken())
 print(Lexemas.getToken())
-Lexemas.rewind("cd")
-print(Lexemas.cadena)
+print(Lexemas.getToken())
 print(Lexemas.getToken())
