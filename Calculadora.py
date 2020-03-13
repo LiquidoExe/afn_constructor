@@ -4,7 +4,7 @@ from AlgoritmoLex import Lexico
 
 class Calculadora:
 	def __init__(self,AFD,cadena):
-		self.Lexico=(cadena,AFD)
+		self.Lex=Lexico(cadena,AFD)
 		self.MAS=10
 		self.MENOS=20
 		self.MULT=30
@@ -18,95 +18,103 @@ class Calculadora:
 		self.NUM=110
 	#----------------------------------------------------
 	def E(self):
-		if T():
-			if Ep():
+		print('E:',end='')
+		if self.T():
+			if self.Ep():
 			 return True
 		return False
 	#----------------------------------------------------
 	def Ep(self):
-		tupla=self.Lexico.getToken()
+		print('Ep:',end='')
+		tupla=self.Lex.getToken()
 		token=tupla[1]
-		print(token)
+		print(tupla[0],token)
 		if token==self.MAS or token==self.MENOS:
-			if T():
-				if Ep():
+			if self.T():
+				if self.Ep():
 					return True
 			return False
-		self.Lexico.rewind(token=tupla[0])
+		self.Lex.rewind(tupla[0])
 		return True
 	#----------------------------------------------------
 	def T(self):
-		if P():
-			if Tp():
+		print('T:',end='')
+		if self.P():
+			if self.Tp():
 			 return True
 		return False
 	#----------------------------------------------------
 	def Tp(self):
-		tupla=self.Lexico.getToken()
+		print('Tp:',end='')
+		tupla=self.Lex.getToken()
 		token=tupla[1]
-		print(token)
+		print(tupla[0],token)
 		if token==self.MULT or token==self.DIV:
-			if P():
-				if Tp():
+			if self.P():
+				if self.Tp():
 					return True
 			return False
-		self.Lexico.rewind(token=tupla[0])
+		self.Lex.rewind(tupla[0])
 		return True
 	#----------------------------------------------------
 	def P(self):
-		if F():
-			if Pp():
+		print('P:',end='')
+		if self.F():
+			if self.Pp():
 			 return True
 		return False
 	#----------------------------------------------------
 	def Pp(self):
-		tupla=self.Lexico.getToken()
+		print('Pp:',end='')
+		tupla=self.Lex.getToken()
 		token=tupla[1]
-		print(token)
+		print(tupla[0],token)
 		if token==self.POT:
-			if F():
-				if Pp():
+			if self.F():
+				if self.Pp():
 					return True
 			return False
-		self.Lexico.rewind(token=tupla[0])
+		self.Lex.rewind(tupla[0])
 		return True
 	#----------------------------------------------------
 	def F(self):
-		tupla=self.Lexico.getToken()
+		print('F:',end='')
+		tupla=self.Lex.getToken()
 		token=tupla[1]
+		print(tupla[0],token)
 		if token==self.PAR_I:
-			if E():
-				tupla=self.Lexico.getToken()
+			if self.E():
+				tupla=self.Lex.getToken()
 				token=tupla[1]
 				if token==self.PAR_D:
 					return True
 				return False
 		if token==self.SIN:
-			tupla=self.Lexico.getToken()
+			tupla=self.Lex.getToken()
 			token=tupla[1]
 			if token==self.PAR_I:
-				if E():
-					tupla=self.Lexico.getToken()
+				if self.E():
+					tupla=self.Lex.getToken()
 					token=tupla[1]
 					if token==self.PAR_D:
 						return True
 					return False
 		if token==self.COS:
-			tupla=self.Lexico.getToken()
+			tupla=self.Lex.getToken()
 			token=tupla[1]
 			if token==self.PAR_I:
-				if E():
-					tupla=self.Lexico.getToken()
+				if self.E():
+					tupla=self.Lex.getToken()
 					token=tupla[1]
 					if token==self.PAR_D:
 						return True
 					return False
 		if token==self.TAN:
-			tupla=self.Lexico.getToken()
+			tupla=self.Lex.getToken()
 			token=tupla[1]
 			if token==self.PAR_I:
-				if E():
-					tupla=self.Lexico.getToken()
+				if self.E():
+					tupla=self.Lex.getToken()
 					token=tupla[1]
 					if token==self.PAR_D:
 						return True
@@ -170,38 +178,5 @@ while tupla[0]!='$' and tupla[0]!='ERROR':
 	tupla = Lexemas.getToken()
 print(tupla)
 
-
-
-
-
-
-
-'''
-a=AFN(simbolo='a')
-b=AFN(simbolo='b')
-c=AFN(simbolo='c')
-d=AFN(simbolo='d')
-f=AFN(simbolo='f')
-g=AFN(simbolo='g')
-a.concatenacion(b)
-c.concatenacion(d)
-f.union(g)
-
-
-a.union_especial([c,f])
-
-
-AFDD=a.ir_a()
-print(AFDD.transiciones)
-print(AFDD.estados)
-
-print(AFDD.finales)
-
-
-
-Lexemas=Lexico("abcdgf",AFDD)
-print(Lexemas.getToken())
-print(Lexemas.getToken())
-print(Lexemas.getToken())
-print(Lexemas.getToken())
-'''
+MiCalculadora=Calculadora(AFDD,"24+48")
+MiCalculadora.E()
