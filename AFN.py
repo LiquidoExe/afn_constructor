@@ -167,7 +167,7 @@ class AFN:
 			for simbolo in self.alfabeto:
 				m=self.mover(s,simbolo)
 				if m in cerraduras_revisadas or len(m) == 0:
-					print("Ya se tiene el conjunto.")
+					pass
 				else:
 					conjuntos_por_revisar.append(m)
 					#print("\tm:")
@@ -257,8 +257,7 @@ class AFN:
 					nueva_lista2=self.estados.get(var).transiciones.get('ε')
 					for elemento in nueva_lista2:
 						lista_temp.append(elemento)
-				else:
-					print("Entro en el error")
+
 		return nueva_lista
 	#Recorrer los numeros de los estados finales.
 	def recorrer_finales(self,posiciones):

@@ -5,6 +5,17 @@ from AlgoritmoLex import Lexico
 class Calculadora:
 	def __init__(self,AFD,cadena):
 		self.Lexico=(cadena,AFD)
+		self.MAS=10
+		self.MENOS=20
+		self.MULT=30
+		self.DIV=40
+		self.POT=50
+		self.PAR_I=60
+		self.PAR_D=70
+		self.SIN=80
+		self.COS=90
+		self.TAN=100
+		self.NUM=110
 	#----------------------------------------------------
 	def E(self):
 		if T():
@@ -16,7 +27,7 @@ class Calculadora:
 		tupla=self.Lexico.getToken()
 		token=tupla[1]
 		print(token)
-		if token==MAS or token==MENOS:
+		if token==self.MAS or token==self.MENOS:
 			if T():
 				if Ep():
 					return True
@@ -34,7 +45,7 @@ class Calculadora:
 		tupla=self.Lexico.getToken()
 		token=tupla[1]
 		print(token)
-		if token==MULT or token==DIV:
+		if token==self.MULT or token==self.DIV:
 			if P():
 				if Tp():
 					return True
@@ -52,7 +63,7 @@ class Calculadora:
 		tupla=self.Lexico.getToken()
 		token=tupla[1]
 		print(token)
-		if token==POT:
+		if token==self.POT:
 			if F():
 				if Pp():
 					return True
@@ -63,46 +74,106 @@ class Calculadora:
 	def F(self):
 		tupla=self.Lexico.getToken()
 		token=tupla[1]
-		if token==PAR_I:
+		if token==self.PAR_I:
 			if E():
 				tupla=self.Lexico.getToken()
 				token=tupla[1]
-				if token==PAR_D:
+				if token==self.PAR_D:
 					return True
 				return False
-		if token==SIN:
+		if token==self.SIN:
 			tupla=self.Lexico.getToken()
 			token=tupla[1]
-			if token==PAR_I:
+			if token==self.PAR_I:
 				if E():
 					tupla=self.Lexico.getToken()
 					token=tupla[1]
-					if token==PAR_D:
+					if token==self.PAR_D:
 						return True
 					return False
-		if token==COS:
+		if token==self.COS:
 			tupla=self.Lexico.getToken()
 			token=tupla[1]
-			if token==PAR_I:
+			if token==self.PAR_I:
 				if E():
 					tupla=self.Lexico.getToken()
 					token=tupla[1]
-					if token==PAR_D:
+					if token==self.PAR_D:
 						return True
 					return False
-		if token==TAN:
+		if token==self.TAN:
 			tupla=self.Lexico.getToken()
 			token=tupla[1]
-			if token==PAR_I:
+			if token==self.PAR_I:
 				if E():
 					tupla=self.Lexico.getToken()
 					token=tupla[1]
-					if token==PAR_D:
+					if token==self.PAR_D:
 						return True
 					return False
-		if token==NUM:
+		if token==self.NUM:
 			return True
 	#----------------------------------------------------
+
+digitos=AFN(simbolo='0')
+uno=AFN(simbolo='1')
+dos=AFN(simbolo='2')
+tres=AFN(simbolo='3')
+cuatro=AFN(simbolo='4')
+cinco=AFN(simbolo='5')
+seis=AFN(simbolo='6')
+siete=AFN(simbolo='7')
+ocho=AFN(simbolo='8')
+nueve=AFN(simbolo='9')
+
+digitos.union(uno)
+digitos.union(dos)
+digitos.union(tres)
+digitos.union(cuatro)
+digitos.union(cinco)
+digitos.union(seis)
+digitos.union(siete)
+digitos.union(ocho)
+digitos.union(nueve)
+
+digitos.cerradura_positiva()
+
+mas=AFN(simbolo='+')
+menos=AFN(simbolo='-')
+mult=AFN(simbolo='*')
+div=AFN(simbolo='/')
+pot=AFN(simbolo='^')
+i=AFN(simbolo='(')
+d=AFN(simbolo=')')
+
+
+
+sin=AFN(simbolo='s')
+sin.concatenacion(AFN(simbolo='i'))
+sin.concatenacion(AFN(simbolo='n'))
+
+cos=AFN(simbolo='c')
+cos.concatenacion(AFN(simbolo='o'))
+cos.concatenacion(AFN(simbolo='s'))
+
+tan=AFN(simbolo='t')
+tan.concatenacion(AFN(simbolo='a'))
+tan.concatenacion(AFN(simbolo='n'))
+
+mas.union_especial([menos,mult,div,pot,i,d,sin,cos,tan,digitos])
+AFDD=mas.ir_a()
+Lexemas=Lexico("+-*/^()sincostan24",AFDD)
+
+tupla = Lexemas.getToken()
+while tupla[0]!='$' and tupla[0]!='ERROR':
+	print(tupla)
+	tupla = Lexemas.getToken()
+print(tupla)
+
+
+
+
+
 
 
 '''
