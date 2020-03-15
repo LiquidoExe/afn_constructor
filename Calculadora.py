@@ -1,6 +1,7 @@
 from AFN import AFN
 from AFN import AFD
 from AlgoritmoLex import Lexico
+import math
 
 class Calculadora:
 	def __init__(self,AFD,cadena):
@@ -127,7 +128,6 @@ class Calculadora:
 		return True
 	#----------------------------------------------------
 	def F(self):
-		self.v2.append(0)
 		print('F:',end='')
 		print(self.Lex.cadena,end=" ")
 		print(self.v2,end=" ")
@@ -147,6 +147,7 @@ class Calculadora:
 			token=tupla[1]
 			if token==self.PAR_I:
 				if self.E():
+					self.v2[self.contador-1]=math.sin(self.v2[self.contador-1])
 					tupla=self.Lex.getToken()
 					token=tupla[1]
 					if token==self.PAR_D:
@@ -157,6 +158,7 @@ class Calculadora:
 			token=tupla[1]
 			if token==self.PAR_I:
 				if self.E():
+					self.v2[self.contador-1]=math.cos(self.v2[self.contador-1])
 					tupla=self.Lex.getToken()
 					token=tupla[1]
 					if token==self.PAR_D:
@@ -167,17 +169,21 @@ class Calculadora:
 			token=tupla[1]
 			if token==self.PAR_I:
 				if self.E():
+					self.v2[self.contador-1]=math.tan(self.v2[self.contador-1])
 					tupla=self.Lex.getToken()
 					token=tupla[1]
 					if token==self.PAR_D:
 						return True
 					return False
 		if token==self.NUM:
+			self.v2.append(0)
 			self.v2[self.contador]=int(tupla[0])
 			self.contador+=1
 			return True
 		return False
 	#----------------------------------------------------
+
+
 
 digitos=AFN(simbolo='0')
 uno=AFN(simbolo='1')
@@ -229,6 +235,6 @@ AFDD=mas.ir_a()
 
 
 
-MiCalculadora=Calculadora(AFDD,"1+4*2+1+4/2")
+MiCalculadora=Calculadora(AFDD,"cos(1)*2")
 MiCalculadora.E()
 print(MiCalculadora.Lex.getToken())
