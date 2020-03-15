@@ -16,58 +16,103 @@ class Calculadora:
 		self.COS=90
 		self.TAN=100
 		self.NUM=110
+		self.contador=0;
+		self.v2=[]
 	#----------------------------------------------------
 	def E(self):
 		print('E:',end='')
+		print(self.Lex.cadena,end=" ")
+		print(self.v2,end=" ")
+		print(self.contador)
 		if self.T():
 			if self.Ep():
 			 return True
 		return False
 	#----------------------------------------------------
 	def Ep(self):
+		print("")
 		print('Ep:',end='')
+		print(self.Lex.cadena,end=" ")
+		print(self.v2,end=" ")
+		print(self.contador)
 		tupla=self.Lex.getToken()
 		token=tupla[1]
 		print(tupla[0],token)
-		if token==self.MAS or token==self.MENOS:
+		if token==self.MAS:
 			if self.T():
+				self.v2[0]=self.v2[0]+self.v2[self.contador-1]
+				self.v2.pop()
+				self.contador-=1
+				if self.Ep():
+					return True
+			return False
+		elif token==self.MENOS:
+			if self.T():
+				self.v2[0]=self.v2[0]-self.v2[self.contador-1]
 				if self.Ep():
 					return True
 			return False
 		if tupla[0] != "$":
+			print("Se regreso ",tupla[0])
 			self.Lex.rewind(tupla[0])
 		return True
 	#----------------------------------------------------
 	def T(self):
 		print('T:',end='')
+		print(self.Lex.cadena,end=" ")
+		print(self.v2,end=" ")
+		print(self.contador)
 		if self.P():
 			if self.Tp():
 			 return True
 		return False
 	#----------------------------------------------------
 	def Tp(self):
+		print("")
 		print('Tp:',end='')
+		print(self.Lex.cadena,end=" ")
+		print(self.v2,end=" ")
+		print(self.contador)
 		tupla=self.Lex.getToken()
 		token=tupla[1]
 		print(tupla[0],token)
-		if token==self.MULT or token==self.DIV:
+		if token==self.MULT:
 			if self.P():
+				self.contador-=1
+				self.v2[self.contador-1]*=self.v2[self.contador]
+				self.v2.pop()
+				if self.Tp():
+					return True
+			return False
+		if token==self.DIV:
+			if self.P():
+				self.contador-=1
+				self.v2[self.contador-1]/=self.v2[self.contador]
+				self.v2.pop()
 				if self.Tp():
 					return True
 			return False
 		if tupla[0] != "$":
+			print("Se regreso ",tupla[0])
 			self.Lex.rewind(tupla[0])
 		return True
 	#----------------------------------------------------
 	def P(self):
 		print('P:',end='')
+		print(self.Lex.cadena,end=" ")
+		print(self.v2,end=" ")
+		print(self.contador)
 		if self.F():
 			if self.Pp():
 			 return True
 		return False
 	#----------------------------------------------------
 	def Pp(self):
+		print("")
 		print('Pp:',end='')
+		print(self.Lex.cadena,end=" ")
+		print(self.v2,end=" ")
+		print(self.contador)
 		tupla=self.Lex.getToken()
 		token=tupla[1]
 		print(tupla[0],token)
@@ -77,11 +122,16 @@ class Calculadora:
 					return True
 			return False
 		if tupla[0] != "$":
+			print("Se regreso ",tupla[0])
 			self.Lex.rewind(tupla[0])
 		return True
 	#----------------------------------------------------
 	def F(self):
+		self.v2.append(0)
 		print('F:',end='')
+		print(self.Lex.cadena,end=" ")
+		print(self.v2,end=" ")
+		print(self.contador)
 		tupla=self.Lex.getToken()
 		token=tupla[1]
 		print(tupla[0],token)
@@ -123,7 +173,10 @@ class Calculadora:
 						return True
 					return False
 		if token==self.NUM:
+			self.v2[self.contador]=int(tupla[0])
+			self.contador+=1
 			return True
+		return False
 	#----------------------------------------------------
 
 digitos=AFN(simbolo='0')
@@ -173,13 +226,9 @@ tan.concatenacion(AFN(simbolo='n'))
 
 mas.union_especial([menos,mult,div,pot,i,d,sin,cos,tan,digitos])
 AFDD=mas.ir_a()
-Lexemas=Lexico("+-*/^()sincostan24",AFDD)
 
-tupla = Lexemas.getToken()
-while tupla[0]!='$' and tupla[0]!='ERROR':
-	print(tupla)
-	tupla = Lexemas.getToken()
-print(tupla)
 
-MiCalculadora=Calculadora(AFDD,"24+48")
+
+MiCalculadora=Calculadora(AFDD,"1+4*2+1+4/2")
 MiCalculadora.E()
+print(MiCalculadora.Lex.getToken())
