@@ -31,7 +31,6 @@ class Calculadora:
 		return False
 	#----------------------------------------------------
 	def Ep(self):
-		print("")
 		print('Ep:',end='')
 		print(self.Lex.cadena,end=" ")
 		print(self.v2,end=" ")
@@ -41,7 +40,7 @@ class Calculadora:
 		print(tupla[0],token)
 		if token==self.MAS:
 			if self.T():
-				self.v2[0]=self.v2[0]+self.v2[self.contador-1]
+				self.v2[self.contador-2]+=self.v2[self.contador-1]
 				self.v2.pop()
 				self.contador-=1
 				if self.Ep():
@@ -49,7 +48,9 @@ class Calculadora:
 			return False
 		elif token==self.MENOS:
 			if self.T():
-				self.v2[0]=self.v2[0]-self.v2[self.contador-1]
+				self.v2[self.contador-2]-=self.v2[self.contador-1]
+				self.v2.pop()
+				self.contador-=1
 				if self.Ep():
 					return True
 			return False
@@ -69,7 +70,6 @@ class Calculadora:
 		return False
 	#----------------------------------------------------
 	def Tp(self):
-		print("")
 		print('Tp:',end='')
 		print(self.Lex.cadena,end=" ")
 		print(self.v2,end=" ")
@@ -109,7 +109,6 @@ class Calculadora:
 		return False
 	#----------------------------------------------------
 	def Pp(self):
-		print("")
 		print('Pp:',end='')
 		print(self.Lex.cadena,end=" ")
 		print(self.v2,end=" ")
@@ -235,6 +234,6 @@ AFDD=mas.ir_a()
 
 
 
-MiCalculadora=Calculadora(AFDD,"cos(1)*2")
+MiCalculadora=Calculadora(AFDD,"1+4*2+cos(1)*sin(2-1)-1")
 MiCalculadora.E()
 print(MiCalculadora.Lex.getToken())
