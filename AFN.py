@@ -50,7 +50,7 @@ class AFN:
 		self.estados_aceptacion.append(simbolo)
 	#Hacer una union entre dos AFNs.
 	def union(self,AFN2):
-		print("union")
+		#print("union")
 		for elemento in AFN2.alfabeto:
 			if elemento not in self.alfabeto:
 				self.alfabeto.append(elemento)

@@ -15,14 +15,14 @@ class asdf:
 		self.SIMB=80
 
 	def E (self,a):
-		print('funcion E',a)
+		print('funcion E')
 		if (self.T(a)):
 			if(self.Ep(a)):
 				return True
 		return False
 
 	def Ep (self,a):
-		print('funcion Ep',a)
+		print('funcion Ep')
 		tupla=self.Lex.getToken()
 		print(tupla)
 		token=tupla[1]
@@ -31,8 +31,6 @@ class asdf:
 			if (self.T(b)):
 				print(a[0].alfabeto,'se une con:',b[0].alfabeto)#accion union f con f2
 				a[0].union(b[0])
-				print(a[0].alfabeto)
-
 				if(self.Ep(a)):
 					return True
 			return False
@@ -42,14 +40,14 @@ class asdf:
 		return True
 
 	def T (self,a):
-		print('funcion T',a)
+		print('funcion T')
 		if (self.C(a)):
 			if (self.Tp(a)):
 				return True
 		return False
 
 	def Tp (self,a):
-		print('funcion Tp',a)
+		print('funcion Tp')
 		tupla=self.Lex.getToken()
 		print(tupla)
 		token=tupla[1]
@@ -67,15 +65,14 @@ class asdf:
 		return True
 
 	def C (self,a):
-		print('funcion C',a)
+		print('funcion C')
 		if(self.F(a)):
-			print(a)
 			if(self.Cp(a)):
 				return True
 		return False
 
 	def Cp (self,a):
-		print('funcion Cp',a)
+		print('funcion Cp')
 		tupla=self.Lex.getToken()
 		print(tupla)
 		token=tupla[1]
@@ -106,7 +103,7 @@ class asdf:
 		return True
 
 	def F (self,a):
-		print('funcion F',a)
+		print('funcion F')
 		tupla=self.Lex.getToken()
 		print(tupla)
 		token=tupla[1]
